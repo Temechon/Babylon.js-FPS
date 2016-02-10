@@ -31,7 +31,8 @@ class Game {
         var h = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0,1,0), scene);
         h.intensity = 0.4;
 
-        var camera = new BABYLON.ArcRotateCamera("camera",Math.PI/2, 0, 30, BABYLON.Vector3.Zero(), scene);
+        var camera = new BABYLON.FreeCamera("camera",new BABYLON.Vector3(0,0,-10), scene);
+         camera.setTarget(BABYLON.Vector3.Zero())
         camera.attachControl(this.engine.getRenderingCanvas());
         return scene;
     }
@@ -43,15 +44,15 @@ class Game {
         // The loader
         var loader =  new BABYLON.AssetsManager(this.scene);
 
-        //var meshTask = loader.addMeshTask("cube", "", "./assets/cube/", "cube.babylon");
-        //meshTask.onSuccess = (t) => {
-        //    for (var m of t.loadedMeshes) {
-        //        m.setEnabled (false);
-        //    }
-        //    this.assets['cube'] = {
-        //        meshes : t.loadedMeshes
-        //    }
-        //};
+        var meshTask = loader.addMeshTask("map", "", "./assets/", "map.babylon");
+        meshTask.onSuccess = (t) => {
+            //for (var m of t.loadedMeshes) {
+            //    m.setEnabled (false);
+            //}
+            //this.assets['cube'] = {
+            //    meshes : t.loadedMeshes
+            //}
+        };
 
         loader.onFinish = () => {
 
@@ -71,7 +72,7 @@ class Game {
     }
 
      private initGame() {
-        var sphere = BABYLON.Mesh.CreateSphere('', 16, 5, this.scene);
+        var sphere = BABYLON.Mesh.CreateSphere('', 16, 1, this.scene);
     }
 
     ///**

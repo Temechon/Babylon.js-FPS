@@ -41,7 +41,7 @@ module.exports = function (grunt) {
         // Watches content related changes
         watch : {
             js : {
-                files: ['js/**/*.js'],
+                files: ['ts/**/*.ts'],
                 tasks: ['newer:ts:dev']
             },
             sass : {
