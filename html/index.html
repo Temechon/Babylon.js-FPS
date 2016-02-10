@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Epic Guide</title>
+    <meta charset='utf-8'/>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+
+    <!--Babylon-->
+    <script src="js/libs/babylon.2.3.max.js"></script>
+    <script src="http://livejs.com/live.js"></script>
+    <script src="js/GameObject.js"></script>
+    <script src="js/Game.js"></script>
+    <script src="js/Timer.js"></script>
+    <!--Css-->
+    <link rel='stylesheet' href='css/main.css'/>
+
+</head>
+<body>
+
+    <canvas id="game-canvas"></canvas>
+
+    <script>
+        window.addEventListener("DOMContentLoaded", function(){
+            new Game('game-canvas');
+        });
+    </script>
+
+</body>
+</html>

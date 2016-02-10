@@ -1,0 +1,17 @@
+// Color palet
+// TBD
+
+
+// Add the given attribute rgba(), with the given color and given alpha
+@mixin to-rgba($attribute, $color, $alpha) {
+  #{$attribute}: rgba(red($color), green($color), blue($color), $alpha);
+}
+
+// Font family
+$font: 'Titillium Web', sans-serif;
+
+// Add font-family and font-weight
+@mixin apply-font($weight:400) {
+  font-family   : $font;
+  font-weight   : $weight;
+}
