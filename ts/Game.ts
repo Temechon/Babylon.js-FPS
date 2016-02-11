@@ -35,11 +35,12 @@ class Game {
          camera.setTarget(BABYLON.Vector3.Zero())
         camera.attachControl(this.engine.getRenderingCanvas());
         
+        // Rotating cube
         let cube = BABYLON.Mesh.CreateBox('box', 1, scene);
         cube.registerBeforeRender(() => {
             cube.rotation.x += 0.1;
             cube.rotation.y += 0.05;
-        }) 
+        });
         
         return scene;
     }
