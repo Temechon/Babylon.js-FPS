@@ -25,15 +25,22 @@ class Game {
     }
 
      private initScene() {
-        var scene = new BABYLON.Scene(this.engine);
+        let scene = new BABYLON.Scene(this.engine);
 
         // Hemispheric light to light the scene
-        var h = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0,1,0), scene);
+        let h = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0,1,0), scene);
         h.intensity = 0.4;
 
-        var camera = new BABYLON.FreeCamera("camera",new BABYLON.Vector3(0,0,-10), scene);
+        let camera = new BABYLON.FreeCamera("camera",new BABYLON.Vector3(0,0,-10), scene);
          camera.setTarget(BABYLON.Vector3.Zero())
         camera.attachControl(this.engine.getRenderingCanvas());
+        
+        let cube = BABYLON.Mesh.CreateBox('box', 1, scene);
+        cube.registerBeforeRender(() => {
+            cube.rotation.x += 0.1;
+            cube.rotation.y += 0.05;
+        }) 
+        
         return scene;
     }
 
