@@ -42,7 +42,7 @@ module.exports = function (grunt) {
         watch : {
             js : {
                 files: ['ts/**/*.ts'],
-                tasks: ['newer:ts:dev']
+                tasks: ['ts:dev']
             },
             sass : {
                 files: ['sass/**/*.scss'],
