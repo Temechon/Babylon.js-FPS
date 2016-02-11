@@ -8,3 +8,23 @@ html, body {
 #game-canvas {
   width: 100%;
   height: 100%; }
+
+.gui {
+  position: absolute;
+  z-index: 1;
+  margin: 25px 0 0 25px; }
+  .gui .guiElement, .gui .timer, .gui .money {
+    color: white;
+    font-size: 2em;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    text-shadow: 3px 3px 1px #333;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+    pointer-events: none; }
+  .gui .timer {
+    font-size: 3.5em;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 700; }

@@ -13,12 +13,24 @@
     <script src="js/Timer.js"></script>
     <!--Css-->
     <link rel='stylesheet' href='css/main.css'/>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
 
 </head>
 <body>
 
+    <!--The game GUI-->
+    <!--Contain the game GUI -->
+    <div class="gui">
+        <!--The countdown before the game over screen-->
+        <div class="timer">00:00</div>
+        <!--The money the player have currently-->
+        <div class="money">9999 $</div>
+    </div>
+    
+    <!--The game canvas-->
     <canvas id="game-canvas"></canvas>
 
+    <!--Starting the game-->
     <script>
         window.addEventListener("DOMContentLoaded", function(){
             new Game('game-canvas');
