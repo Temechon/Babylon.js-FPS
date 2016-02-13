@@ -25,20 +25,45 @@ class Game {
     }
 
      private initScene() {
-        // Hemispheric light to light the scene
-        let h = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0,1,0), this.scene);
-        h.intensity = 0.4;
-
-        // let camera = new BABYLON.FreeCamera("camera",new BABYLON.Vector3(0,100,-10), this.scene);
-        //  camera.setTarget(BABYLON.Vector3.Zero())
-        this.scene.activeCamera.attachControl(this.engine.getRenderingCanvas());
-        
+         
         // Rotating cube
         let cube = BABYLON.Mesh.CreateBox('box', 1, this.scene);
         cube.registerBeforeRender(() => {
             cube.rotation.x += 0.1;
             cube.rotation.y += 0.05;
         });
+        
+        // Hemispheric light to light the scene
+        let h = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0,1,0), this.scene);
+        h.intensity = 0.4;
+
+        // Change camera controls
+        let cam = <BABYLON.FreeCamera> this.scene.activeCamera;
+        cam.attachControl(this.engine.getRenderingCanvas());        
+        cam.keysUp.push(90);      
+        cam.keysDown.push(83);      
+        cam.keysLeft.push(81);      
+        cam.keysRight.push(68);
+        
+        // Set full screen
+        let setFullScreen = () => {
+            this.engine.switchFullscreen(true);
+            window.removeEventListener('click', setFullScreen);
+        }        
+        window.addEventListener('click', setFullScreen);
+        
+        // Skybox
+        var skybox = BABYLON.Mesh.CreateSphere("skyBox", 32, 1000.0, this.scene);
+        skybox.position.y = 50;
+        var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", this.scene); 
+        skyboxMaterial.backFaceCulling = false;
+        skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("skybox/TropicalSunnyDay", this.scene);
+        skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+        skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+        skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+        skyboxMaterial.disableLighting = true;
+        skybox.material = skyboxMaterial;
+        
     }
 
     private run() {
@@ -62,8 +87,9 @@ class Game {
 
      private initGame() {
         // Get weapon
-        this.scene.getMeshByName('blaster').position.x = +0.05;
+        this.scene.getMeshByName('blaster').position.x = 0.05;
         this.scene.getMeshByName('blaster').position.y = -0.1;
+        this.scene.getMeshByName('blaster').position.z = 0.4;
         this.scene.getMeshByName('blaster').parent = this.scene.activeCamera;
     }
 

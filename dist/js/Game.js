@@ -14,18 +14,40 @@ var Game = (function () {
         this.run();
     }
     Game.prototype.initScene = function () {
-        // Hemispheric light to light the scene
-        var h = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), this.scene);
-        h.intensity = 0.4;
-        // let camera = new BABYLON.FreeCamera("camera",new BABYLON.Vector3(0,100,-10), this.scene);
-        //  camera.setTarget(BABYLON.Vector3.Zero())
-        this.scene.activeCamera.attachControl(this.engine.getRenderingCanvas());
+        var _this = this;
         // Rotating cube
         var cube = BABYLON.Mesh.CreateBox('box', 1, this.scene);
         cube.registerBeforeRender(function () {
             cube.rotation.x += 0.1;
             cube.rotation.y += 0.05;
         });
+        // Hemispheric light to light the scene
+        var h = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), this.scene);
+        h.intensity = 0.4;
+        // Change camera controls
+        var cam = this.scene.activeCamera;
+        cam.attachControl(this.engine.getRenderingCanvas());
+        cam.keysUp.push(90);
+        cam.keysDown.push(83);
+        cam.keysLeft.push(81);
+        cam.keysRight.push(68);
+        // Set full screen
+        var setFullScreen = function () {
+            _this.engine.switchFullscreen(true);
+            window.removeEventListener('click', setFullScreen);
+        };
+        window.addEventListener('click', setFullScreen);
+        // Skybox
+        var skybox = BABYLON.Mesh.CreateSphere("skyBox", 32, 1000.0, this.scene);
+        skybox.position.y = 50;
+        var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", this.scene);
+        skyboxMaterial.backFaceCulling = false;
+        skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("skybox/TropicalSunnyDay", this.scene);
+        skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+        skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+        skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+        skyboxMaterial.disableLighting = true;
+        skybox.material = skyboxMaterial;
     };
     Game.prototype.run = function () {
         var _this = this;
@@ -42,8 +64,9 @@ var Game = (function () {
     };
     Game.prototype.initGame = function () {
         // Get weapon
-        this.scene.getMeshByName('blaster').position.x = +0.05;
+        this.scene.getMeshByName('blaster').position.x = 0.05;
         this.scene.getMeshByName('blaster').position.y = -0.1;
+        this.scene.getMeshByName('blaster').position.z = 0.4;
         this.scene.getMeshByName('blaster').parent = this.scene.activeCamera;
     };
     return Game;
