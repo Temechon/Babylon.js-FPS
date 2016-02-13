@@ -25,62 +25,46 @@ class Game {
     }
 
      private initScene() {
-        let scene = new BABYLON.Scene(this.engine);
-
         // Hemispheric light to light the scene
-        let h = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0,1,0), scene);
+        let h = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0,1,0), this.scene);
         h.intensity = 0.4;
 
-        let camera = new BABYLON.FreeCamera("camera",new BABYLON.Vector3(0,0,-10), scene);
-         camera.setTarget(BABYLON.Vector3.Zero())
-        camera.attachControl(this.engine.getRenderingCanvas());
+        // let camera = new BABYLON.FreeCamera("camera",new BABYLON.Vector3(0,100,-10), this.scene);
+        //  camera.setTarget(BABYLON.Vector3.Zero())
+        this.scene.activeCamera.attachControl(this.engine.getRenderingCanvas());
         
         // Rotating cube
-        let cube = BABYLON.Mesh.CreateBox('box', 1, scene);
+        let cube = BABYLON.Mesh.CreateBox('box', 1, this.scene);
         cube.registerBeforeRender(() => {
             cube.rotation.x += 0.1;
             cube.rotation.y += 0.05;
         });
-        
-        return scene;
     }
 
     private run() {
-
-        this.scene = this.initScene();
-
-        // The loader
-        var loader =  new BABYLON.AssetsManager(this.scene);
-
-        var meshTask = loader.addMeshTask("map", "", "./assets/", "map.babylon");
-        meshTask.onSuccess = (t) => {
-            //for (var m of t.loadedMeshes) {
-            //    m.setEnabled (false);
-            //}
-            //this.assets['cube'] = {
-            //    meshes : t.loadedMeshes
-            //}
-        };
-
-        loader.onFinish = () => {
-
+        
+        BABYLON.SceneLoader.Load('assets/', 'map.babylon', this.engine, (scene) => {
+            
+            this.scene = scene;
+            this.initScene(); 
             this.scene.executeWhenReady(() => {
 
                 this.engine.runRenderLoop(() => {
                     this.scene.render();
                 });
             });
-
-            // Load first level
+            
             this.initGame();
+        })
 
-        };
 
-        loader.load();
     }
 
      private initGame() {
-        var sphere = BABYLON.Mesh.CreateSphere('', 16, 1, this.scene);
+        // Get weapon
+        this.scene.getMeshByName('blaster').position.x = +0.05;
+        this.scene.getMeshByName('blaster').position.y = -0.1;
+        this.scene.getMeshByName('blaster').parent = this.scene.activeCamera;
     }
 
     ///**

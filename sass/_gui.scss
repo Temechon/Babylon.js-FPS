@@ -3,14 +3,14 @@
     position:absolute;
     z-index:1;
     margin:25px 0 0 25px;
+    user-select:none;
+    pointer-events: none;
     
     .guiElement {
         color:white;
         font-size: 2em;
         @include apply-font(400);
         text-shadow: 3px 3px 1px #333;
-        user-select:none;
-        pointer-events: none;
     }
     
     // The final countdown! tadada-daaaa....
