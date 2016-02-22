@@ -5,23 +5,18 @@ class Game {
     public scene    : BABYLON.Scene;
 
     constructor(canvasId:string) {
-
+        
         let canvas : HTMLCanvasElement = <HTMLCanvasElement> document.getElementById(canvasId);
         this.engine         = new BABYLON.Engine(canvas, true);
-
-        // Contains all loaded assets needed for this state
+        // Contiens l'ensemble des assets du jeu autre que l'environnement
         this.assets         = [];
-
-        // The state scene
+        // La scène 3D du jeu
         this.scene          = null;
-
-        // Resize window event
+        // On resize le jeu en fonction de la taille de la fenetre
         window.addEventListener("resize", () => {
             this.engine.resize();
         });
-
         this.run();
-
     }
 
      private initScene() {
@@ -67,9 +62,7 @@ class Game {
     }
 
     private run() {
-        
-        BABYLON.SceneLoader.Load('assets/', 'map.babylon', this.engine, (scene) => {
-            
+        BABYLON.SceneLoader.Load('assets/', 'map.babylon', this.engine, (scene) => { 
             this.scene = scene;
             this.initScene(); 
             this.scene.executeWhenReady(() => {
@@ -80,9 +73,7 @@ class Game {
             });
             
             this.initGame();
-        })
-
-
+        });
     }
 
      private initGame() {
