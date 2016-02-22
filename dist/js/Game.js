@@ -3,11 +3,11 @@ var Game = (function () {
         var _this = this;
         var canvas = document.getElementById(canvasId);
         this.engine = new BABYLON.Engine(canvas, true);
-        // Contains all loaded assets needed for this state
+        // Contiens l'ensemble des assets du jeu autre que l'environnement
         this.assets = [];
-        // The state scene
+        // La scène 3D du jeu
         this.scene = null;
-        // Resize window event
+        // On resize le jeu en fonction de la taille de la fenetre
         window.addEventListener("resize", function () {
             _this.engine.resize();
         });
