@@ -14,7 +14,6 @@ var Game = (function () {
         this.run();
     }
     Game.prototype.initScene = function () {
-        var _this = this;
         // Rotating cube
         var cube = BABYLON.Mesh.CreateBox('box', 1, this.scene);
         cube.registerBeforeRender(function () {
@@ -32,11 +31,11 @@ var Game = (function () {
         cam.keysLeft.push(81);
         cam.keysRight.push(68);
         // Set full screen
-        var setFullScreen = function () {
-            _this.engine.switchFullscreen(true);
-            window.removeEventListener('click', setFullScreen);
-        };
-        window.addEventListener('click', setFullScreen);
+        // let setFullScreen = () => {
+        //     this.engine.switchFullscreen(true);
+        //     window.removeEventListener('click', setFullScreen);
+        // }        
+        // window.addEventListener('click', setFullScreen);
         // Skybox
         var skybox = BABYLON.Mesh.CreateSphere("skyBox", 32, 1000.0, this.scene);
         skybox.position.y = 50;
@@ -68,6 +67,8 @@ var Game = (function () {
         this.scene.getMeshByName('blaster').position.y = -0.1;
         this.scene.getMeshByName('blaster').position.z = 0.4;
         this.scene.getMeshByName('blaster').parent = this.scene.activeCamera;
+        var c = new Character('', this.scene);
+        c.position.y = 3;
     };
     return Game;
 })();

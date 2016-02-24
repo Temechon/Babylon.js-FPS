@@ -3,6 +3,7 @@
         "babylon.2.3.d.ts",
         "Game.ts", 
         "GameObject.ts", 
-        "Timer.ts"
+        "Timer.ts",
+        "Character.ts"
     ]
 }
