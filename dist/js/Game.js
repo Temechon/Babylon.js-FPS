@@ -14,15 +14,6 @@ var Game = (function () {
         this.run();
     }
     Game.prototype.initScene = function () {
-        // Rotating cube
-        var cube = BABYLON.Mesh.CreateBox('box', 1, this.scene);
-        cube.registerBeforeRender(function () {
-            cube.rotation.x += 0.1;
-            cube.rotation.y += 0.05;
-        });
-        // Hemispheric light to light the scene
-        var h = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), this.scene);
-        h.intensity = 0.4;
         // Change camera controls
         var cam = this.scene.activeCamera;
         cam.attachControl(this.engine.getRenderingCanvas());
@@ -47,6 +38,23 @@ var Game = (function () {
         skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
         skyboxMaterial.disableLighting = true;
         skybox.material = skyboxMaterial;
+        // Gestion des ombres portees
+        var defaultLight = this.scene.getLightByName('Default light');
+        defaultLight.intensity = 0.5;
+        var dir = new BABYLON.DirectionalLight('dirLight', new BABYLON.Vector3(-0.5, -1, -0.5), this.scene);
+        dir.position = new BABYLON.Vector3(40, 60, 40);
+        var shadowGenerator = new BABYLON.ShadowGenerator(1024, dir);
+        shadowGenerator.useBlurVarianceShadowMap = true;
+        // Application des ombres aux maisons et arbre
+        this.scene.meshes.forEach(function (m) {
+            if (m.name.indexOf('house') !== -1 || m.name.indexOf('arbre') !== -1) {
+                shadowGenerator.getShadowMap().renderList.push(m);
+                m.receiveShadows = false;
+            }
+            else {
+                m.receiveShadows = true;
+            }
+        });
     };
     Game.prototype.run = function () {
         var _this = this;
@@ -63,11 +71,9 @@ var Game = (function () {
     };
     Game.prototype.initGame = function () {
         // Get weapon
-        this.scene.getMeshByName('blaster').position.x = 0.05;
-        this.scene.getMeshByName('blaster').position.y = -0.1;
-        this.scene.getMeshByName('blaster').position.z = 0.4;
+        this.scene.getMeshByName('blaster').position = new BABYLON.Vector3(0.05, -0.1, 0.4);
         this.scene.getMeshByName('blaster').parent = this.scene.activeCamera;
-        var c = new Character('', this.scene);
+        var c = new Character('', this);
         c.position.y = 3;
     };
     return Game;

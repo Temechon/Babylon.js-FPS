@@ -5,8 +5,11 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var Character = (function (_super) {
     __extends(Character, _super);
-    function Character(name, scene) {
-        _super.call(this, name, scene);
+    function Character(name, game) {
+        _super.call(this, name, game.scene);
+        this.game = game;
+        // Character mesh
+        var scene = game.scene;
         var redSphere = BABYLON.Mesh.CreateIcoSphere('', { radius: 1, flat: true }, scene);
         redSphere.parent = this;
         var redMat = scene.getMaterialByName('red');
@@ -15,7 +18,18 @@ var Character = (function (_super) {
             redMat.diffuseColor = BABYLON.Color3.Red();
         }
         redSphere.material = redMat;
+        // radius definition
+        this.radius = 5;
+        // On check la position du joueur par rapport à ce character
+        this._checkPlayer = function () {
+        };
+        scene.registerBeforeRender(this._checkPlayer);
     }
+    // Efface ce character de la memoire
+    Character.prototype.dispose = function () {
+        this.unregisterBeforeRender(this._checkPlayer);
+        _super.prototype.dispose.call(this);
+    };
     return Character;
 })(BABYLON.Mesh);
 //# sourceMappingURL=Character.js.map
