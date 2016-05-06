@@ -47,7 +47,7 @@ var Game = (function () {
         shadowGenerator.useBlurVarianceShadowMap = true;
         // Application des ombres aux maisons et arbre
         this.scene.meshes.forEach(function (m) {
-            if (m.name.indexOf('house') !== -1 || m.name.indexOf('arbre') !== -1) {
+            if (m.name.indexOf('maison') !== -1 || m.name.indexOf('arbre') !== -1) {
                 shadowGenerator.getShadowMap().renderList.push(m);
                 m.receiveShadows = false;
             }
