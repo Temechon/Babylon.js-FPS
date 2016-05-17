@@ -3,9 +3,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var Character = (function (_super) {
-    __extends(Character, _super);
-    function Character(name, game) {
+var Target = (function (_super) {
+    __extends(Target, _super);
+    function Target(name, game, position) {
         _super.call(this, name, game.scene);
         this.game = game;
         // Character mesh
@@ -18,18 +18,11 @@ var Character = (function (_super) {
             redMat.diffuseColor = BABYLON.Color3.Red();
         }
         redSphere.material = redMat;
-        // radius definition
-        this.radius = 5;
-        // On check la position du joueur par rapport à ce character
-        this._checkPlayer = function () {
-        };
-        scene.registerBeforeRender(this._checkPlayer);
     }
     // Efface ce character de la memoire
-    Character.prototype.dispose = function () {
-        this.unregisterBeforeRender(this._checkPlayer);
+    Target.prototype.dispose = function () {
         _super.prototype.dispose.call(this);
     };
-    return Character;
+    return Target;
 })(BABYLON.Mesh);
 //# sourceMappingURL=Character.js.map

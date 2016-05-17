@@ -3,6 +3,12 @@ class Game {
     private engine  : BABYLON.Engine;
     public assets   : Array<any>;
     public scene    : BABYLON.Scene;
+    private time    : number = 0;
+    private timeGui : HTMLElement;
+    private targetGui : HTMLElement;
+    
+    // Contient toutes les cibles à détruire
+    public targets  : Array<BABYLON.AbstractMesh>;
 
     constructor(canvasId:string) {
         
@@ -10,8 +16,11 @@ class Game {
         this.engine         = new BABYLON.Engine(canvas, true);
         // Contiens l'ensemble des assets du jeu autre que l'environnement
         this.assets         = [];
+        this.targets        = [];
         // La scène 3D du jeu
         this.scene          = null;
+        this.timeGui        = document.getElementById('time');
+        this.targetGui        = document.getElementById('targets');
         // On resize le jeu en fonction de la taille de la fenetre
         window.addEventListener("resize", () => {
             this.engine.resize();
@@ -29,11 +38,11 @@ class Game {
         cam.keysRight.push(68);
         
         // Set full screen
-        // let setFullScreen = () => {
-        //     this.engine.switchFullscreen(true);
-        //     window.removeEventListener('click', setFullScreen);
-        // }        
-        // window.addEventListener('click', setFullScreen);
+        let setFullScreen = () => {
+            this.engine.switchFullscreen(true);
+            window.removeEventListener('click', setFullScreen);
+        }        
+        window.addEventListener('click', setFullScreen);
         
         // Skybox
         var skybox = BABYLON.Mesh.CreateSphere("skyBox", 32, 1000.0, this.scene);
@@ -80,6 +89,8 @@ class Game {
             });
             
             this.initGame();
+            
+            this.scene.debugLayer.show();
         });
     }
 
@@ -88,58 +99,51 @@ class Game {
         this.scene.getMeshByName('blaster').position = new BABYLON.Vector3(0.05, -0.1, 0.4);
         this.scene.getMeshByName('blaster').parent = this.scene.activeCamera;
         
-        let c = new Character('', this);
-        c.position.y = 3;
+        // Active toutes les cibles de la scène
+        this.scene.meshes.forEach((m) => {
+            if (m.name.indexOf('target') !== -1) {
+                m.isPickable = true; // Pour pouvoir les détruire
+                m.rotationQuaternion = null;
+                this.targets.push(m);
+            }
+        });
+        
+        // Rotation infinie de toutes les cibles
+        this.scene.registerBeforeRender(() => {
+            this.targets.forEach((target) => {
+                target.rotation.y += 0.1;
+            })
+        })
+        
+        // Active le tir
+        this.scene.onPointerDown = (evt, pr) => {
+            if (pr.hit) {
+                this.destroyTarget(pr.pickedMesh);
+            }
+        }        
+        
+        // Lance le timer
+        setInterval(this.updateTime.bind(this), 1000);
+        
     }
-
-    ///**
-    // * Returns an integer in [min, max[
-    // */
-    //static randomInt(min, max) {
-    //    if (min === max) {
-    //        return (min);
-    //    }
-    //    let random = Math.random();
-    //    return Math.floor(((random * (max - min)) + min));
-    //}
-    //
-    //static randomNumber(min, max) {
-    //    if (min === max) {
-    //        return (min);
-    //    }
-    //    let random = Math.random();
-    //    return (random * (max - min)) + min;
-    //}
-    //
-    ///**
-    // * Create an instance model from the given name.
-    // */
-    //createModel(name, parent) {
-    //    if (! this.assets[name]) {
-    //        console.warn('No asset corresponding.');
-    //    } else {
-    //        if (!parent) {
-    //            parent = new GameObject(this);
-    //        }
-    //
-    //        let obj = this.assets[name];
-    //        //parent._animations = obj.animations;
-    //        let meshes = obj.meshes;
-    //
-    //        for (let i=0; i<meshes.length; i++ ){
-    //            // Don't clone mesh without any vertices
-    //            if (meshes[i].getTotalVertices() > 0) {
-    //
-    //                let newmesh = meshes[i].clone(meshes[i].name, null, true);
-    //                parent.addChildren(newmesh);
-    //
-    //                if (meshes[i].skeleton) {
-    //                    newmesh.skeleton = meshes[i].skeleton.clone();
-    //                    this.scene.stopAnimation(newmesh);
-    //                }
-    //            }
-    //        }
-    //    }
-    //    return parent;
-    //}
+    
+    /**
+     * Efface la cible donnée en paramètre.
+     */
+    private destroyTarget(target) {
+        var index = this.targets.indexOf(target);
+        if (index > -1) {
+            this.targets.splice(index, 1);
+            target.dispose();
+            this.targetGui.innerHTML = String(this.targets.length);
+            if (this.targets.length == 0) {
+                // Le jeu est fini !
+            }
+        }
+    }
+    
+    private updateTime() {
+        this.time ++;
+        this.timeGui.innerHTML = String(this.time);
+    }
 }

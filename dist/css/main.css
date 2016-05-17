@@ -18,7 +18,7 @@ html, body {
       -ms-user-select: none;
           user-select: none;
   pointer-events: none; }
-  .gui .guiElement, .gui .timer, .gui .money {
+  .gui .guiElement, .gui .timer, .gui .targets {
     color: white;
     font-size: 2em;
     font-family: "Montserrat", sans-serif;

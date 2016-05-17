@@ -1,15 +1,9 @@
-class Character extends BABYLON.Mesh {
+class Target extends BABYLON.Mesh {
     
     // L'instance du jeu et du joueur
     private game : Game;
-    
-    // Le radius dans lequel le Character va activer une mission pour le joueur
-    private radius : number;
-    
-    // Fonction appelee a chaque frame pour voir si le joueur 
-    private _checkPlayer : () => void;
-    
-    constructor (name, game) {
+        
+    constructor (name, game, position) {
         super(name, game.scene);
         this.game = game;
         
@@ -24,19 +18,10 @@ class Character extends BABYLON.Mesh {
         }
         redSphere.material = redMat;
         
-        // radius definition
-        this.radius = 5;
-        
-        // On check la position du joueur par rapport à ce character
-        this._checkPlayer = () => {
-            
-        }
-        scene.registerBeforeRender(this._checkPlayer);   
     }
     
     // Efface ce character de la memoire
     dispose () {
-        this.unregisterBeforeRender(this._checkPlayer);
         super.dispose();
     }
     

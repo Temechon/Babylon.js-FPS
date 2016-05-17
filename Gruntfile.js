@@ -73,7 +73,7 @@ module.exports = function (grunt) {
                     beautify: false
                 },
                 files: {
-                    'dist/js/index.js': ['dist/js/GameObject.js', 'dist/js/**/*.js', '!dist/js/libs/**/*.js']
+                    'dist/js/index.js': ['dist/js/**/*.js', '!dist/js/libs/**/*.js']
                 }
             }
         },
