@@ -1,3 +1,13 @@
+
+// Le viseur
+#gunsight {
+    position:absolute;
+    top:50%;
+    left:50%;
+    margin-top:-37px;
+    margin-left:-37px;
+}
+    
 // Game GUI main style
 .gui {
     position:absolute;
@@ -23,6 +33,5 @@
     // Money ! Get away..
     .targets {
         @extend .guiElement;
-    }
-    
+    }    
 }

@@ -20,11 +20,18 @@ var Game = (function () {
     Game.prototype.initScene = function () {
         // Change camera controls
         var cam = this.scene.activeCamera;
+        cam.applyGravity = false;
         cam.attachControl(this.engine.getRenderingCanvas());
         cam.keysUp.push(90);
         cam.keysDown.push(83);
         cam.keysLeft.push(81);
         cam.keysRight.push(68);
+        // Set full screen
+        // let setFullScreen = () => {
+        //     this.engine.switchFullscreen(true);
+        //     window.removeEventListener('click', setFullScreen);
+        // }        
+        // window.addEventListener('click', setFullScreen);
         // Skybox
         var skybox = BABYLON.Mesh.CreateSphere("skyBox", 32, 1000.0, this.scene);
         skybox.position.y = 50;
@@ -53,6 +60,9 @@ var Game = (function () {
                 m.receiveShadows = true;
             }
         });
+        // Le son de l'arme
+        var gunshot = new BABYLON.Sound("gunshot", "assets/sounds/shot.wav", this.scene, null, { loop: false, autoplay: false });
+        this.assets['gunshot'] = gunshot;
     };
     Game.prototype.run = function () {
         var _this = this;
@@ -65,7 +75,7 @@ var Game = (function () {
                 });
             });
             _this.initGame();
-            _this.scene.debugLayer.show();
+            // this.scene.debugLayer.show();
         });
     };
     Game.prototype.initGame = function () {
@@ -81,16 +91,27 @@ var Game = (function () {
                 _this.targets.push(m);
             }
         });
+        var soleil = BABYLON.Mesh.CreateSphere('soleil', 16, 10, this.scene);
+        soleil.position = new BABYLON.Vector3(0, 100, 0);
+        var soleilMaterial = new BABYLON.StandardMaterial('soleilMaterial', this.scene);
+        soleilMaterial.emissiveColor = BABYLON.Color3.Yellow();
+        soleilMaterial.specularColor = BABYLON.Color3.Black();
+        soleil.material = soleilMaterial;
         // Rotation infinie de toutes les cibles
         this.scene.registerBeforeRender(function () {
             _this.targets.forEach(function (target) {
-                target.rotation.y += 0.1;
+                target.rotation.y += 0.1 * _this.scene.getAnimationRatio();
             });
         });
         // Active le tir
         this.scene.onPointerDown = function (evt, pr) {
-            if (pr.hit) {
-                _this.destroyTarget(pr.pickedMesh);
+            var width = _this.scene.getEngine().getRenderWidth();
+            var height = _this.scene.getEngine().getRenderHeight();
+            var pickInfo = _this.scene.pick(width / 2, height / 2);
+            // Effet sonore
+            _this.assets['gunshot'].play();
+            if (pickInfo.hit) {
+                _this.destroyTarget(pickInfo.pickedMesh);
             }
         };
         // Lance le timer
@@ -104,6 +125,7 @@ var Game = (function () {
         if (index > -1) {
             this.targets.splice(index, 1);
             target.dispose();
+            // Mise à jour de l'interface
             this.targetGui.innerHTML = String(this.targets.length);
             if (this.targets.length == 0) {
             }

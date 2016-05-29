@@ -31,6 +31,7 @@ class Game {
      private initScene() { 
         // Change camera controls
         let cam = <BABYLON.FreeCamera> this.scene.activeCamera;
+        cam.applyGravity = false;
         cam.attachControl(this.engine.getRenderingCanvas());        
         cam.keysUp.push(90);      
         cam.keysDown.push(83);      
@@ -38,11 +39,11 @@ class Game {
         cam.keysRight.push(68);
         
         // Set full screen
-        let setFullScreen = () => {
-            this.engine.switchFullscreen(true);
-            window.removeEventListener('click', setFullScreen);
-        }        
-        window.addEventListener('click', setFullScreen);
+        // let setFullScreen = () => {
+        //     this.engine.switchFullscreen(true);
+        //     window.removeEventListener('click', setFullScreen);
+        // }        
+        // window.addEventListener('click', setFullScreen);
         
         // Skybox
         var skybox = BABYLON.Mesh.CreateSphere("skyBox", 32, 1000.0, this.scene);
@@ -75,6 +76,10 @@ class Game {
                 m.receiveShadows = true;
             }
         });
+        
+        // Le son de l'arme
+        var gunshot = new BABYLON.Sound("gunshot", "assets/sounds/shot.wav", this.scene, null, { loop: false, autoplay: false });
+        this.assets['gunshot'] = gunshot;
     }
 
     private run() {
@@ -90,7 +95,7 @@ class Game {
             
             this.initGame();
             
-            this.scene.debugLayer.show();
+            // this.scene.debugLayer.show();
         });
     }
 
@@ -108,17 +113,29 @@ class Game {
             }
         });
         
+        var soleil = BABYLON.Mesh.CreateSphere('soleil', 16, 10, this.scene);
+        soleil.position = new BABYLON.Vector3(0, 100, 0);
+        let soleilMaterial = new BABYLON.StandardMaterial('soleilMaterial', this.scene);
+        soleilMaterial.emissiveColor = BABYLON.Color3.Yellow();
+        soleilMaterial.specularColor = BABYLON.Color3.Black();
+        soleil.material = soleilMaterial; 
+        
         // Rotation infinie de toutes les cibles
         this.scene.registerBeforeRender(() => {
             this.targets.forEach((target) => {
-                target.rotation.y += 0.1;
+                target.rotation.y += 0.1*this.scene.getAnimationRatio();
             })
         })
         
         // Active le tir
         this.scene.onPointerDown = (evt, pr) => {
-            if (pr.hit) {
-                this.destroyTarget(pr.pickedMesh);
+            var width = this.scene.getEngine().getRenderWidth();
+            var height = this.scene.getEngine().getRenderHeight(); 
+            var pickInfo = this.scene.pick(width/2, height/2);
+            // Effet sonore
+            this.assets['gunshot'].play();
+            if (pickInfo.hit) {
+                this.destroyTarget(pickInfo.pickedMesh);
             }
         }        
         
@@ -135,6 +152,7 @@ class Game {
         if (index > -1) {
             this.targets.splice(index, 1);
             target.dispose();
+            // Mise à jour de l'interface
             this.targetGui.innerHTML = String(this.targets.length);
             if (this.targets.length == 0) {
                 // Le jeu est fini !
