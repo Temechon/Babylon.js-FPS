@@ -18,20 +18,20 @@ var Game = (function () {
         this.run();
     }
     Game.prototype.initScene = function () {
+        var _this = this;
         // Change camera controls
         var cam = this.scene.activeCamera;
-        cam.applyGravity = false;
         cam.attachControl(this.engine.getRenderingCanvas());
         cam.keysUp.push(90);
         cam.keysDown.push(83);
         cam.keysLeft.push(81);
         cam.keysRight.push(68);
         // Set full screen
-        // let setFullScreen = () => {
-        //     this.engine.switchFullscreen(true);
-        //     window.removeEventListener('click', setFullScreen);
-        // }        
-        // window.addEventListener('click', setFullScreen);
+        var setFullScreen = function () {
+            _this.engine.isPointerLock = true;
+            window.removeEventListener('click', setFullScreen);
+        };
+        window.addEventListener('click', setFullScreen);
         // Skybox
         var skybox = BABYLON.Mesh.CreateSphere("skyBox", 32, 1000.0, this.scene);
         skybox.position.y = 50;

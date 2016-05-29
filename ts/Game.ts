@@ -31,7 +31,6 @@ class Game {
      private initScene() { 
         // Change camera controls
         let cam = <BABYLON.FreeCamera> this.scene.activeCamera;
-        cam.applyGravity = false;
         cam.attachControl(this.engine.getRenderingCanvas());        
         cam.keysUp.push(90);      
         cam.keysDown.push(83);      
@@ -39,11 +38,11 @@ class Game {
         cam.keysRight.push(68);
         
         // Set full screen
-        // let setFullScreen = () => {
-        //     this.engine.switchFullscreen(true);
-        //     window.removeEventListener('click', setFullScreen);
-        // }        
-        // window.addEventListener('click', setFullScreen);
+        let setFullScreen = () => {
+            this.engine.isPointerLock = true;
+            window.removeEventListener('click', setFullScreen);
+        }        
+        window.addEventListener('click', setFullScreen);
         
         // Skybox
         var skybox = BABYLON.Mesh.CreateSphere("skyBox", 32, 1000.0, this.scene);
