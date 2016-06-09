@@ -43,6 +43,7 @@ var Game = (function () {
         skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
         skyboxMaterial.disableLighting = true;
         skybox.material = skyboxMaterial;
+        skybox.layerMask = 2; // 010 in binary
         // Gestion des ombres portees
         var defaultLight = this.scene.getLightByName('Default light');
         defaultLight.intensity = 0.5;
@@ -114,6 +115,45 @@ var Game = (function () {
                 _this.destroyTarget(pickInfo.pickedMesh);
             }
         };
+        // Minimap
+        var mm = new BABYLON.FreeCamera("minimap", new BABYLON.Vector3(0, 100, 0), this.scene);
+        mm.setTarget(new BABYLON.Vector3(0, 0, 0));
+        // Activate the orthographic projection
+        mm.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
+        //These values are required for using an orthographic mode,
+        // and represents the coordinates of the square containing all the camera view.
+        // this.size is the size of our arena
+        mm.orthoLeft = -500 / 2;
+        mm.orthoRight = 500 / 2;
+        mm.orthoTop = 500 / 2;
+        mm.orthoBottom = -500 / 2;
+        mm.rotation.x = Math.PI / 2;
+        // Viewport definition
+        var xstart = 0.8, // 80% from the left
+        ystart = 0.75; // 75% from the bottom
+        var width = 0.99 - xstart, // Almost until the right edge of the screen
+        height = 1 - ystart; // Until the top edge of the screen
+        mm.viewport = new BABYLON.Viewport(xstart, ystart, width, height);
+        mm.layerMask = 1; // 001 in binary
+        this.scene.activeCamera.layerMask = 2;
+        // The representation of player in the minimap
+        var s = BABYLON.Mesh.CreateSphere("player2", 16, 25, this.scene);
+        s.position.y = 50;
+        // The sphere position will be displayed accordingly to the player position
+        this.scene.registerBeforeRender(function () {
+            if (_this.scene.activeCameras[0]) {
+                s.position.x = _this.scene.activeCameras[0].position.x;
+                s.position.z = _this.scene.activeCameras[0].position.z;
+            }
+        });
+        var red = new BABYLON.StandardMaterial("red", this.scene);
+        red.diffuseColor = BABYLON.Color3.Red();
+        red.specularColor = BABYLON.Color3.Black();
+        s.material = red;
+        s.layerMask = 1; // 001 in binary : won't be displayed on the player camera, only in the minimap
+        // Add the camera to the list of active cameras of the game
+        this.scene.activeCameras.push(this.scene.activeCamera);
+        this.scene.activeCameras.push(mm);
         // Lance le timer
         setInterval(this.updateTime.bind(this), 1000);
     };
